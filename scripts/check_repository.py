@@ -16,7 +16,7 @@ import yaml
 ROOT: typing.Final = pathlib.Path(__file__).resolve().parents[1]
 RELEASE_EXTRAS: typing.Final = {
     ("toml", ".ai-rulez/config.toml", "$.plugin.version"),
-    ("yaml", "plugin.yaml", "$.version"),
+    ("yaml", "src/homebrew_news/plugin.yaml", "$.version"),
 }
 
 
@@ -47,7 +47,7 @@ def version_errors(root: pathlib.Path) -> list[str]:
     expected = read_toml(root / "pyproject.toml")["project"]["version"]
     versions = {
         ".ai-rulez/config.toml": read_toml(root / ".ai-rulez/config.toml")["plugin"]["version"],
-        "plugin.yaml": read_yaml_version(root / "plugin.yaml"),
+        "src/homebrew_news/plugin.yaml": read_yaml_version(root / "src/homebrew_news/plugin.yaml"),
         ".config/release-please-manifest.json": read_json(root / ".config/release-please-manifest.json")["."],
         ".hermes/package/pyproject.toml": read_toml(root / ".hermes/package/pyproject.toml")["project"]["version"],
     }
@@ -87,6 +87,14 @@ def release_config_errors(root: pathlib.Path) -> list[str]:
     return errors
 
 
+def dependency_errors(root: pathlib.Path) -> list[str]:
+    expected = read_toml(root / "pyproject.toml")["project"]["dependencies"]
+    manifest = yaml.safe_load((root / "src/homebrew_news/plugin.yaml").read_text(encoding="utf-8"))
+    if manifest.get("python_dependencies") != expected:
+        return ["src/homebrew_news/plugin.yaml: Python dependencies differ from pyproject.toml"]
+    return []
+
+
 def generated_paths(root: pathlib.Path) -> set[str]:
     return {
         *read_json(root / ".ai-rulez/.generated-manifest.json")["files"],
@@ -124,10 +132,12 @@ def generated_errors(root: pathlib.Path) -> list[str]:
 
 
 def main() -> None:
-    errors = [*version_errors(ROOT), *release_config_errors(ROOT), *generated_errors(ROOT)]
+    errors = [*version_errors(ROOT), *dependency_errors(ROOT), *release_config_errors(ROOT), *generated_errors(ROOT)]
     if errors:
         raise SystemExit("\n".join(errors))
-    sys.stdout.write("Repository versions, release configuration, and generated outputs are consistent.\n")
+    sys.stdout.write(
+        "Repository versions, dependencies, release configuration, and generated outputs are consistent.\n"
+    )
 
 
 if __name__ == "__main__":

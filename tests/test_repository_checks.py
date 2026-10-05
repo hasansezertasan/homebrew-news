@@ -16,7 +16,7 @@ def project_tree(tmp_path: pathlib.Path) -> pathlib.Path:
             tmp_path / directory,
             ignore=shutil.ignore_patterns("__pycache__"),
         )
-    for filename in ("pyproject.toml", "plugin.yaml", "uv.lock", "CHANGELOG.md", ".gitignore"):
+    for filename in ("pyproject.toml", "uv.lock", "CHANGELOG.md", ".gitignore"):
         shutil.copyfile(check_repository.ROOT / filename, tmp_path / filename)
     for relative_path in check_repository.generated_paths(check_repository.ROOT):
         destination = tmp_path / relative_path
@@ -27,7 +27,7 @@ def project_tree(tmp_path: pathlib.Path) -> pathlib.Path:
 
 @pytest.mark.parametrize(
     "relative_path",
-    ["plugin.yaml", ".ai-rulez/config.toml", ".hermes/package/pyproject.toml", "uv.lock"],
+    ["src/homebrew_news/plugin.yaml", ".ai-rulez/config.toml", ".hermes/package/pyproject.toml", "uv.lock"],
 )
 def test_release_version_drift_is_rejected(project_tree: pathlib.Path, relative_path: str) -> None:
     assert not check_repository.version_errors(project_tree)
@@ -36,6 +36,14 @@ def test_release_version_drift_is_rejected(project_tree: pathlib.Path, relative_
     target.write_text(target.read_text().replace(current_version, "9.8.7"), encoding="utf-8")
 
     assert any(relative_path in error for error in check_repository.version_errors(project_tree))
+
+
+def test_native_dependency_drift_is_rejected(project_tree: pathlib.Path) -> None:
+    assert not check_repository.dependency_errors(project_tree)
+    target: typing.Final = project_tree / "src/homebrew_news/plugin.yaml"
+    target.write_text(target.read_text().replace("stamina>=24.3,<27", "stamina>=24.3,<26"), encoding="utf-8")
+
+    assert check_repository.dependency_errors(project_tree)
 
 
 def test_release_config_must_bump_native_manifest(project_tree: pathlib.Path) -> None:

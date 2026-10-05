@@ -9,7 +9,7 @@
       "changelog-path": "CHANGELOG.md",
       "extra-files": [
         {"type": "toml", "path": ".ai-rulez/config.toml", "jsonpath": "$.plugin.version"},
-        {"type": "yaml", "path": "plugin.yaml", "jsonpath": "$.version"}
+        {"type": "yaml", "path": "src/homebrew_news/plugin.yaml", "jsonpath": "$.version"}
       ]
     }
   }

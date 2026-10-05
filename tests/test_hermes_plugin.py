@@ -3,6 +3,7 @@ import datetime
 import importlib.util
 import json
 import pathlib
+import shutil
 import sys
 import typing
 
@@ -186,16 +187,26 @@ def test_defaults_and_tap_override(tmp_path: pathlib.Path) -> None:
 @pytest.mark.parametrize(
     "entry_point",
     [
-        "__init__.py",
+        "src/homebrew_news/__init__.py",
         ".hermes/plugins/homebrew-news/__init__.py",
         ".hermes/package/src/homebrew_news_hermes_plugin/__init__.py",
     ],
 )
-def test_directory_entry_points_collect_real_repository(repository_path: pathlib.Path, entry_point: str) -> None:
+def test_directory_entry_points_collect_real_repository(
+    repository_path: pathlib.Path, tmp_path: pathlib.Path, entry_point: str
+) -> None:
     commit_package(repository_path, "Formula/native.rb", "v1", "Native import")
-    plugin_context: typing.Final = prepare_context(repository_path)
+    plugin_context = prepare_context(repository_path)
     project_root: typing.Final = pathlib.Path(__file__).parents[1]
-    entry_point_path: typing.Final = project_root / entry_point
+    entry_point_path = project_root / entry_point
+    if entry_point == "src/homebrew_news/__init__.py":
+        installed_path = tmp_path / "plugins" / "homebrew-news"
+        shutil.copytree(entry_point_path.parent, installed_path, ignore=shutil.ignore_patterns("__pycache__"))
+        (installed_path / "taps.toml").write_text(
+            f'[[taps]]\nrepository = "example/tap"\npath = "{repository_path.as_posix()}"', encoding="utf-8"
+        )
+        entry_point_path = installed_path / "__init__.py"
+        plugin_context = RecordingContext(settings={"config_path": "taps.toml"})
     module_name: typing.Final = "_isolated_homebrew_plugin"
     plugin_spec: typing.Final = importlib.util.spec_from_file_location(
         module_name,
@@ -209,11 +220,12 @@ def test_directory_entry_points_collect_real_repository(repository_path: pathlib
     try:
         plugin_spec.loader.exec_module(plugin_module)
         plugin_module.register(plugin_context)
+        assert not plugin_context.state.stored_values
         tool_result = json.loads(plugin_context.handlers["homebrew_news_digest"]({"date": "2026-10-04"}))
         assert tool_result["status"] == "ok"
         assert tool_result["taps"][0]["changes"][0]["package_name"] == "native"
         handler_module = plugin_context.handlers["homebrew_news_digest"].__module__
-        if entry_point == "__init__.py":
+        if entry_point == "src/homebrew_news/__init__.py":
             assert handler_module.startswith(module_name + ".")
         else:
             assert handler_module == "homebrew_news.hermes_plugin"

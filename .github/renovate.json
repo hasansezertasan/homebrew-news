@@ -7,7 +7,7 @@
   "packageRules": [
     {
       "description": "Group Python dependencies, uv, and GitHub Actions into a weekly maintenance PR",
-      "matchManagers": ["github-actions", "pep621", "asdf"],
+      "matchManagers": ["github-actions", "pep621", "mise"],
       "groupName": "dependencies"
     }
   ]

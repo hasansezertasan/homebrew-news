@@ -196,7 +196,7 @@ class DigestTool:
 
 def register(context: PluginContext, *, plugin_root: pathlib.Path | None = None) -> None:
     package_path: typing.Final = pathlib.Path(__file__).parent
-    digest_tool: typing.Final = DigestTool(context=context, plugin_root=plugin_root or package_path.parent)
+    digest_tool: typing.Final = DigestTool(context=context, plugin_root=plugin_root or package_path)
     context.register_tool(
         name="homebrew_news_digest", toolset="homebrew_news", schema=TOOL_SCHEMA, handler=digest_tool.run_digest
     )

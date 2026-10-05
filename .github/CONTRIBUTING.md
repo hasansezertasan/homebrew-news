@@ -4,6 +4,13 @@ Run `make check` for the same validation, linting, type checks, offline integrat
 tests, and package builds that CI runs. It installs the locked uv development
 dependencies. Python 3.12+, uv, Git, and Make are required.
 
+With mise installed, install the pinned uv version and run the checks:
+
+```sh
+mise install
+mise exec -- make check
+```
+
 ## Sources and generated files
 
 Edit `.ai-rulez/rules/` and `.ai-rulez/context/` for contributor guidance, and
@@ -14,7 +21,9 @@ Run `make generate` after changing those sources or `.ai-rulez/config.toml`.
 `AGENTS.md`, `CLAUDE.md`, `.claude/rules/`, `.hermes.md`, and `.hermes/` are generated.
 `.ai-rulez/.generated-manifest.json` lists contributor outputs;
 `.ai-rulez-generated.json` lists plugin outputs and their hashes.
-The root `plugin.yaml`, root `__init__.py`, and main Python package are hand-authored.
+The native `src/homebrew_news/plugin.yaml`, package `__init__.py`, and main Python
+package are hand-authored. The native plugin's manifest dependencies must match
+`pyproject.toml`; `make check` detects drift between the two installation forms.
 
 `make check` compares versions and regenerates AI Rulez output into a temporary
 directory, so it catches stale files without rewriting your checkout.
@@ -26,7 +35,7 @@ Squash-merged PR titles determine release notes and version bumps.
 
 The release workflow uses release-please's Python strategy to maintain
 `pyproject.toml`, `CHANGELOG.md`, and `.config/release-please-manifest.json`.
-Its extra-file rules also update the native `plugin.yaml` and
+Its extra-file rules also update the native `src/homebrew_news/plugin.yaml` and
 `.ai-rulez/config.toml` source version. The workflow refreshes `uv.lock`, runs
 `make generate`, and checks the release PR before pushing its regenerated files.
 Do not edit generated version copies by hand.
@@ -39,7 +48,8 @@ commits alone do not request a new release.
 After a release PR merges into `main`, the workflow validates that merge commit
 with the full CI matrix before creating its `vX.Y.Z` tag and GitHub Release.
 A later passing push cannot release an earlier pending merge that failed checks.
-The tagged repository is the Hermes installation artifact. The workflow does not
+The tagged repository's `src/homebrew_news/` directory is the Hermes installation
+artifact. The workflow does not
 publish to PyPI or upload the generated adapter wheel as a standalone distribution.
 
 ### Repository setup
@@ -72,6 +82,6 @@ merge's run after the queue clears.
 Renovate uses native Python/uv and GitHub Actions managers, with weekly updates
 and automerge disabled. Activate the Renovate app for the repository separately.
 Keep Python tool versions in `pyproject.toml` and its lockfile, and the uv version
-in `.tool-versions`, which both workflows read. Renovate's native asdf manager
+in `mise.toml`, which both workflows read. Renovate's native mise manager
 updates that pin. No npm tooling or regex managers are needed.
 GitHub Action pins live in their workflow `uses` fields.

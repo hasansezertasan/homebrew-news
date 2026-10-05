@@ -55,10 +55,19 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ fromJSON(steps.release-please.outputs.pr).headBranchName }}
+      - name: Read the uv version from mise
+        id: uv-version
+        if: steps.release-please.outputs.prs_created == 'true'
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import tomllib
+          with open("mise.toml", "rb") as config:
+              print(f"version={tomllib.load(config)['tools']['uv']}")
+          PY
       - uses: astral-sh/setup-uv@v6
         if: steps.release-please.outputs.prs_created == 'true'
         with:
-          version-file: .tool-versions
+          version: ${{ steps.uv-version.outputs.version }}
           enable-cache: true
           python-version: '3.12'
       # A version bump changes both the editable package lock entry and AI Rulez

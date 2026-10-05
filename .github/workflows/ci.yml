@@ -22,9 +22,17 @@ jobs:
         python-version: ['3.12', '3.13']
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Read the uv version from mise
+        id: uv-version
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import tomllib
+          with open("mise.toml", "rb") as config:
+              print(f"version={tomllib.load(config)['tools']['uv']}")
+          PY
       - uses: astral-sh/setup-uv@v6
         with:
-          version-file: .tool-versions
+          version: ${{ steps.uv-version.outputs.version }}
           enable-cache: true
           python-version: ${{ matrix.python-version }}
       - run: make check

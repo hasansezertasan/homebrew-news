@@ -13,16 +13,16 @@ Requirements: current Hermes Agent, Python 3.12+, and Git 2.37+. Install from Gi
 after these changes are published:
 
 ```sh
-hermes plugins install hasansezertasan/homebrew-news --enable
+hermes plugins install 'hasansezertasan/homebrew-news#src/homebrew_news' --enable
 ```
 
 Hermes asks for consent to prepare the declared Python dependency (`stamina`)
 before enabling the plugin. Restart an existing session or gateway after enabling
 to make the tool available. Check installation with `hermes plugins list`.
 
-For local development, copy this repository into
-`~/.hermes/plugins/homebrew-news/` (excluding `.venv`, `.git`, caches, and generated
-digests), then run `hermes plugins enable homebrew-news`. Hermes prepares declared
+For local development, copy the contents of `src/homebrew_news/` into
+`~/.hermes/plugins/homebrew-news/` (excluding `__pycache__`), then run
+`hermes plugins enable homebrew-news`. Hermes prepares declared
 dependencies as part of enablement. The Python package also exposes a
 `hermes_agent.plugins` entry point for pip installations into Hermes's runtime.
 A separate `uv tool install` installs only the standalone CLI, not a Hermes plugin.
@@ -228,7 +228,7 @@ Generated artifacts and their provenance file are committed and checked in CI.
 
 These generated adapters require `homebrew_news` to be importable in the Hermes
 runtime. AI Rulez 4.24.2 does not declare that dependency or preserve our manifest
-v2 tool declarations and settings schema. Use the native root plugin or the main
+v2 tool declarations and settings schema. Use the native `src/homebrew_news/` plugin or the main
 Python wheel for installation as described above; the generated adapter package
 is not a standalone replacement. It can be built for integration development with
 `uv build .hermes/package --out-dir dist/hermes`.
@@ -243,8 +243,8 @@ make check
 make generate
 
 # With Hermes installed; registration validation does not collect news:
-hermes plugins doctor . --ci
-hermes plugins validate .
+hermes plugins doctor src/homebrew_news --ci
+hermes plugins validate src/homebrew_news
 ```
 
 Tests create temporary Git repositories and exercise the CLI without network
@@ -254,10 +254,13 @@ AI Rulez adapter entry points,
 including malformed arguments, bounded output, partial results, and state failures.
 The bundled skill and typing marker are included in the wheel.
 
-The native manifest lives at `plugin.yaml`; root `__init__.py` loads the package
-through relative imports, so Git-installed plugins work without adding `src/`
-to global `sys.path` or installing this package into the Hermes environment.
-Declared third-party dependencies still need Hermes's normal admission process.
+The native manifest lives at `src/homebrew_news/plugin.yaml`, beside the package's
+`__init__.py` registration entry point and runtime skill. Hermes installs this Git
+subdirectory as the plugin, so its relative imports work without adding `src/`
+to global `sys.path` or making the repository root a Python package.
+The manifest declares dependencies for directory installation; `pyproject.toml`
+declares the same dependencies for the wheel. Hermes prepares directory-plugin
+dependencies through its normal admission process.
 Registration performs no network access or state writes. See the
 [Hermes plugin contract](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins).
 

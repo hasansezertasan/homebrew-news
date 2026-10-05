@@ -1,6 +1,8 @@
 name: homebrew-news
 version: 0.2.0
 manifest_version: 2
+python_dependencies:
+  - stamina>=24.3,<27
 description: Collect Homebrew tap changes and turn them into daily news with source links.
 provides_tools:
   - homebrew_news_digest
