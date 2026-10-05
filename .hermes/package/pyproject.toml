@@ -4,9 +4,9 @@ build-backend = 'hatchling.build'
 
 [project]
 name = 'homebrew-news-hermes-plugin'
-version = '0.2.0'
+version = '0.0.0'
 description = 'Collect Homebrew tap changes and write daily news with source links.'
-requires-python = '>=3.12'
+requires-python = '>=3.14'
 
 [project.entry-points]
 [project.entry-points.'hermes_agent.plugins']

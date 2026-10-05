@@ -9,7 +9,7 @@ Regenerate: ai-rulez generate
 
 Docs: https://github.com/Goldziher/ai-rulez
 Content-Hash: blake3:393bdd881718df434b06f8c1dc1754223733652d93dc58953c22ee28867d3364
-Source-Hash: blake3:a7e128263371c5c3e84ddc03aa2904861754e1c330a31b65b2ae4077b4a14b9e
+Source-Hash: blake3:d47ae3872d47a06b38af95ce618c45bfb2bb382aaaad947b7b22cbd4b8f92b12
 -->
 
 # homebrew-news

@@ -6,7 +6,7 @@ description: Write daily Homebrew tap news from homebrew_news_digest results, pr
 <!--
 AI-RULEZ :: GENERATED FILE — DO NOT EDIT
 Content-Hash: blake3:91d45b9dde55a2ea1f34406a66529c7997ffdbf19cafbd4ab1bd12bd3035d2f5
-Source-Hash: blake3:f4cd4c1f0fdb68129f9b0058e62a97ce5537558a980b256326de3fcc18cce120
+Source-Hash: blake3:791bd0bb07e6cef4a1e7f14c0ff0272b8c12659b83d1fb8868f6aa421b5af453
 Schema-Version: v1
 -->
 

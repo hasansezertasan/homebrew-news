@@ -8,8 +8,8 @@ Use MCP server: npx -y ai-rulez@latest mcp
 Regenerate: ai-rulez generate
 
 Docs: https://github.com/Goldziher/ai-rulez
-Content-Hash: blake3:7e926fdf1a6c7b049142d468ba088417c45860d34b4d2d9730050ec64133d5e4
-Source-Hash: blake3:a7e128263371c5c3e84ddc03aa2904861754e1c330a31b65b2ae4077b4a14b9e
+Content-Hash: blake3:3a98d0b315181aa4227f16d308be398c65ed8aa5e68110764db3a8be575e6acc
+Source-Hash: blake3:d47ae3872d47a06b38af95ce618c45bfb2bb382aaaad947b7b22cbd4b8f92b12
 -->
 
 # homebrew-news
@@ -20,7 +20,7 @@ A Hermes plugin and Python CLI for sourced Homebrew tap news.
 
 ### development
 
-Use Python 3.12+ and uv with the checked-in lockfile. Keep the collector independent
+Use Python 3.14 and uv with the checked-in lockfile. Keep the collector independent
 of Hermes; share collection behavior between the CLI and the plugin through
 `src/homebrew_news/service.py`. Match the existing typing and Ruff conventions.
 

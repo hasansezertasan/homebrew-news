@@ -1,7 +1,9 @@
 import dataclasses
-import datetime
 import re
 import typing
+
+if typing.TYPE_CHECKING:
+    import datetime
 
 
 @typing.final

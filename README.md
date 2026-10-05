@@ -9,7 +9,7 @@ The same collector is available as a standalone Python CLI.
 
 ## Use with Hermes
 
-Requirements: current Hermes Agent, Python 3.12+, and Git 2.37+. Install from Git
+Requirements: current Hermes Agent running on Python 3.14, and Git 2.37+. Install from Git
 after these changes are published:
 
 ```sh
@@ -107,7 +107,7 @@ Ruby definitions. A website, RSS, and public feed publishing are future work.
 
 ## Quick start
 
-Requirements: Python 3.12+, Git 2.37+, and [uv](https://docs.astral.sh/uv/).
+Requirements: Python 3.14, Git 2.37+, and [uv](https://docs.astral.sh/uv/).
 
 ```sh
 uv sync
@@ -203,7 +203,7 @@ exit with status 1 and a message on stderr. Successful runs exit with status 0.
 
 `.github/workflows/ci.yml` runs linting, formatting, strict type checks, offline
 integration tests, AI Rulez validation and generated-output checks, and package
-builds on pushes and pull requests with Python 3.12 and 3.13. The workflow uses
+builds on pushes and pull requests with Python 3.14. The workflow uses
 locked dependencies and read-only repository permissions.
 
 ### AI Rulez

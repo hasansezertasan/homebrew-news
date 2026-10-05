@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "homebrew-news"
-version = "0.2.0"
+version = "0.0.0"
 description = "A Hermes plugin and CLI for daily news from Homebrew tap history"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = ["stamina>=24.3,<27"]
 
 [project.scripts]
@@ -29,6 +29,7 @@ dev = [
 
 [tool.ruff]
 line-length = 120
+target-version = "py314"
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -41,6 +42,7 @@ ignore = ["D", "EM", "TRY003", "COM812", "CPY001"]
 
 [tool.mypy]
 strict = true
+python_version = "3.14"
 explicit_package_bases = true
 mypy_path = "src"
 

@@ -17,9 +17,6 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    strategy:
-      matrix:
-        python-version: ['3.12', '3.13']
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Read the uv version from mise
@@ -34,5 +31,5 @@ jobs:
         with:
           version: ${{ steps.uv-version.outputs.version }}
           enable-cache: true
-          python-version: ${{ matrix.python-version }}
+          python-version: '3.14'
       - run: make check

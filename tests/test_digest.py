@@ -1,6 +1,5 @@
 import datetime
 import os
-import pathlib
 import subprocess
 import sys
 import typing
@@ -13,6 +12,9 @@ from homebrew_news.cli import run_cli
 from homebrew_news.collector import GitCommandError, HistoryLimitError, collect_changes
 from homebrew_news.config import load_configuration
 from homebrew_news.digest import render_digest
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
 def run_git_command(repository_path: pathlib.Path, *arguments: str, committed_at: str = "2026-10-04T12:00:00Z") -> str:

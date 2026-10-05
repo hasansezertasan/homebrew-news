@@ -3,7 +3,7 @@ name: development
 description: Development and verification conventions for homebrew-news.
 ---
 
-Use Python 3.12+ and uv with the checked-in lockfile. Keep the collector independent
+Use Python 3.14 and uv with the checked-in lockfile. Keep the collector independent
 of Hermes; share collection behavior between the CLI and the plugin through
 `src/homebrew_news/service.py`. Match the existing typing and Ruff conventions.
 

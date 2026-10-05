@@ -2,7 +2,8 @@
 
 Run `make check` for the same validation, linting, type checks, offline integration
 tests, and package builds that CI runs. It installs the locked uv development
-dependencies. Python 3.12+, uv, Git, and Make are required.
+dependencies. Python 3.14, uv, Git, and Make are required.
+`.python-version` selects Python 3.14 for local uv commands.
 
 With mise installed, install the pinned uv version and run the checks:
 
@@ -46,7 +47,7 @@ the next version from releasable Conventional Commits. `chore`, `test`, and `ci`
 commits alone do not request a new release.
 
 After a release PR merges into `main`, the workflow validates that merge commit
-with the full CI matrix before creating its `vX.Y.Z` tag and GitHub Release.
+with the Python 3.14 CI checks before creating its `vX.Y.Z` tag and GitHub Release.
 A later passing push cannot release an earlier pending merge that failed checks.
 The tagged repository's `src/homebrew_news/` directory is the Hermes installation
 artifact. The workflow does not
@@ -56,7 +57,7 @@ publish to PyPI or upload the generated adapter wheel as a standalone distributi
 
 Enable **Settings → Actions → General → Allow GitHub Actions to create and approve
 pull requests**. The workflow uses `GITHUB_TOKEN`; no publishing credential is needed.
-Configure branch protection on `main` to require the CI matrix before merging,
+Configure branch protection on `main` to require the `quality` CI check before merging,
 and use squash merging so PR titles become the Conventional Commit messages.
 
 GitHub does not normally trigger new workflows from pushes and PR events created
@@ -64,7 +65,7 @@ with `GITHUB_TOKEN`. After the generated commit lands on a release PR, run the C
 workflow manually on its branch, or push a maintainer commit to trigger PR checks
 if your branch protection requires PR event checks. A GitHub App token can automate
 those events later. The release workflow also runs `make check` before pushing the
-generated commit and runs the full matrix after the PR merges.
+generated commit and runs CI after the PR merges.
 
 ### Recovering a release
 

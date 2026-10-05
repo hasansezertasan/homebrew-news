@@ -1,11 +1,14 @@
-import datetime
 import pathlib
 import tempfile
 import typing
 
 from .collector import GitCommandError, HistoryLimitError, clone_repository, collect_changes
-from .config import TapSettings
 from .digest import TapDigest
+
+if typing.TYPE_CHECKING:
+    import datetime
+
+    from .config import TapSettings
 
 
 def collect_tap_digests(tap_settings: tuple[TapSettings, ...], digest_date: datetime.date) -> tuple[TapDigest, ...]:

@@ -1,8 +1,10 @@
 import dataclasses
-import pathlib
 import re
 import tomllib
 import typing
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
 @typing.final

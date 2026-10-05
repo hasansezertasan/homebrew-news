@@ -1,11 +1,13 @@
 import json
-import pathlib
 import shutil
 import typing
 
 import pytest
 
 from scripts import check_repository
+
+if typing.TYPE_CHECKING:
+    import pathlib
 
 
 @pytest.fixture

@@ -1,5 +1,5 @@
 name: homebrew-news
-version: 0.2.0
+version: 0.0.0
 manifest_version: 2
 python_dependencies:
   - stamina>=24.3,<27

@@ -69,7 +69,7 @@ jobs:
         with:
           version: ${{ steps.uv-version.outputs.version }}
           enable-cache: true
-          python-version: '3.12'
+          python-version: '3.14'
       # A version bump changes both the editable package lock entry and AI Rulez
       # provenance. Rebuild them after every release-please rewrite of its PR.
       - name: Refresh the release PR's lockfile and generated bundles
