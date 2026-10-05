@@ -1,0 +1,20 @@
+version = "4.0"
+name = "homebrew-news"
+description = "A Hermes plugin and Python CLI for sourced Homebrew tap news."
+presets = ["codex", "claude", "hermes"]
+gitignore = false
+compact = true
+
+[plugin]
+name = "homebrew-news"
+version = "0.2.0"
+description = "Collect Homebrew tap changes and write daily news with source links."
+homepage = "https://github.com/hasansezertasan/homebrew-news"
+repository = "https://github.com/hasansezertasan/homebrew-news"
+runtimes = ["hermes"]
+# Keep the runtime skill canonical in the Python package, separate from governance.
+content_root = "src/homebrew_news"
+
+[plugin.hermes]
+source = ".ai-rulez/hermes/index.py"
+requires_python = ">=3.12"

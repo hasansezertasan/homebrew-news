@@ -1,0 +1,15 @@
+name: homebrew-news
+version: 0.2.0
+manifest_version: 2
+description: Collect Homebrew tap changes and turn them into daily news with source links.
+provides_tools:
+  - homebrew_news_digest
+config_schema:
+  taps:
+    type: list
+    default: [Homebrew/homebrew-core]
+    description: Full GitHub owner/repository names to track.
+  config_path:
+    type: str
+    default: ''
+    description: Optional taps.toml path; relative paths resolve inside the plugin installation.

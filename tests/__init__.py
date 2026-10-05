@@ -1,0 +1,1 @@
+"""Homebrew news integration tests."""

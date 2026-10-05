@@ -1,0 +1,4 @@
+name: "homebrew-news"
+version: "0.2.0"
+description: "Collect Homebrew tap changes and write daily news with source links."
+kind: "standalone"
