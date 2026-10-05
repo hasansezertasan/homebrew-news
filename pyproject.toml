@@ -38,6 +38,10 @@ ignore = ["D", "EM", "TRY003", "COM812", "CPY001"]
 "tests/*.py" = ["S101", "S603", "S607", "PLR2004", "INP001"]
 ".ai-rulez/hermes/index.py" = ["INP001"]
 ".hermes/plugins/homebrew-news/__init__.py" = ["N999"]
+# The native plugin root is a package named after its checkout directory (homebrew-news in CI and installs).
+"__init__.py" = ["N999"]
+"scripts/__init__.py" = ["N999"]
+"tests/__init__.py" = ["N999"]
 
 [tool.mypy]
 strict = true
