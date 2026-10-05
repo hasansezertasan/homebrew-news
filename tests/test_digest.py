@@ -95,6 +95,20 @@ def test_collects_root_commit(repository_path: pathlib.Path, package_path: str) 
     assert package_changes[0].package_path == package_path
 
 
+@pytest.mark.parametrize("separator", ["\u2028", "\u2029", "\u0085", "\r", "\t"])
+def test_collects_subjects_with_line_separators(repository_path: pathlib.Path, separator: str) -> None:
+    commit_subject: typing.Final = f"Add{separator}tool"
+    commit_package(repository_path, "Formula/tool.rb", "v1", commit_subject)
+    commit_package(repository_path, "Formula/other.rb", "v1", "Add other")
+
+    package_changes: typing.Final = collect_changes(repository_path, datetime.date(2026, 10, 4))
+
+    assert {change.package_name: change.commit_subject for change in package_changes} == {
+        "tool": commit_subject.replace("\r", "\n"),
+        "other": "Add other",
+    }
+
+
 def test_reports_merge_once(repository_path: pathlib.Path) -> None:
     commit_package(repository_path, "README.md", "base", "Initial", "2026-10-03T00:00:00Z")
     run_git_command(repository_path, "checkout", "-b", "feature")

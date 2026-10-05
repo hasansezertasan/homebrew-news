@@ -122,6 +122,7 @@ def collect_changes(
         repository_path,
         "log",
         "--first-parent",
+        "-z",
         f"--since-as-filter={period_start.isoformat()}",
         f"--until={period_finish.isoformat()}",
         "--format=%H%x09%ct%x09%s",
@@ -129,7 +130,9 @@ def collect_changes(
         "--",
     )
     package_changes: typing.Final[list[PackageChange]] = []
-    for history_line in history_output.splitlines():
+    for history_line in history_output.split("\0"):
+        if not history_line:
+            continue
         commit_hash, timestamp_text, commit_subject = history_line.split("\t", 2)
         committed_at = datetime.datetime.fromtimestamp(int(timestamp_text), datetime.UTC)
         if not period_start <= committed_at < period_finish:
