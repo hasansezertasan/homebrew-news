@@ -6,9 +6,11 @@ import sys
 import typing
 
 import pytest
+import stamina
 
+from homebrew_news import collector
 from homebrew_news.cli import run_cli
-from homebrew_news.collector import GitCommandError, collect_changes
+from homebrew_news.collector import GitCommandError, HistoryLimitError, collect_changes
 from homebrew_news.config import load_configuration
 from homebrew_news.digest import render_digest
 
@@ -168,6 +170,7 @@ def test_quiet_day_outputs_markdown(repository_path: pathlib.Path, capsys: pytes
         ["--tap", "../bad"],
         ["--tap", "example/homebrew-tap", "--date", "2026-02-30"],
         ["--tap", "example/homebrew-tap", "--date", "20261004"],
+        ["--tap", "example/homebrew-tap", "--date", "9999-12-31"],
     ],
 )
 def test_rejects_invalid_arguments(invalid_arguments: list[str]) -> None:
@@ -303,3 +306,23 @@ def test_bounded_remote_history_requires_parent_before_day(
 
     assert len(package_changes) == 1
     assert package_changes[0].change_kind == "Updated"
+
+
+def test_history_limit_is_not_retried(tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    git_calls: typing.Final[list[tuple[str, ...]]] = []
+
+    def record_git(_repository_path: pathlib.Path | None, *arguments: str, timeout_seconds: int = 120) -> str:
+        del timeout_seconds
+        git_calls.append(arguments)
+        return ""
+
+    monkeypatch.setattr(collector, "execute_git", record_git)
+    monkeypatch.setattr(collector, "check_history_coverage", lambda *_: False)
+    stamina.set_testing(True, attempts=3)
+    try:
+        with pytest.raises(HistoryLimitError):
+            collector.clone_repository("example/homebrew-tap", tmp_path / "tap.git", datetime.date(2000, 1, 1))
+    finally:
+        stamina.set_testing(False)
+
+    assert sum(arguments[0] == "clone" for arguments in git_calls) == 1

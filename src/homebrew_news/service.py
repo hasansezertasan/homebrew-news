@@ -3,7 +3,7 @@ import pathlib
 import tempfile
 import typing
 
-from .collector import GitCommandError, clone_repository, collect_changes
+from .collector import GitCommandError, HistoryLimitError, clone_repository, collect_changes
 from .config import TapSettings
 from .digest import TapDigest
 
@@ -19,7 +19,7 @@ def collect_tap_digests(tap_settings: tuple[TapSettings, ...], digest_date: date
                     repository_path = pathlib.Path(temporary_directory) / "tap.git"
                     clone_repository(configured_tap.repository_name, repository_path, digest_date)
                     package_changes = collect_changes(repository_path, digest_date, allow_shallow=True)
-        except (GitCommandError, OSError) as failure:
+        except (GitCommandError, HistoryLimitError, OSError) as failure:
             tap_digests.append(TapDigest(tap_name=configured_tap.repository_name, failure_message=str(failure)))
         else:
             tap_digests.append(TapDigest(tap_name=configured_tap.repository_name, package_changes=package_changes))

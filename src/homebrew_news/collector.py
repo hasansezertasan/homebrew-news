@@ -15,6 +15,11 @@ class GitCommandError(RuntimeError):
     """Git could not read or download a repository."""
 
 
+@typing.final
+class HistoryLimitError(RuntimeError):
+    """The requested day is older than the bounded remote history; retrying cannot help."""
+
+
 def execute_git(repository_path: pathlib.Path | None, *arguments: str, timeout_seconds: int = 120) -> str:
     git_command: typing.Final = ["git"]
     if repository_path is not None:
@@ -75,7 +80,7 @@ def clone_repository(
                 timeout_seconds=300,
             )
         if not check_history_coverage(destination_path, digest_date):
-            raise GitCommandError("Requested day exceeds the remote history limit; use a full local checkout.")
+            raise HistoryLimitError("Requested day exceeds the remote history limit; use a full local checkout.")
 
 
 def check_history_coverage(repository_path: pathlib.Path, digest_date: datetime.date) -> bool:

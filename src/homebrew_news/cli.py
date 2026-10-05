@@ -25,6 +25,8 @@ def parse_digest_date(argument: str) -> datetime.date:
         raise argparse.ArgumentTypeError("Use a date in YYYY-MM-DD format.") from failure
     if argument != parsed_date.isoformat():
         raise argparse.ArgumentTypeError("Use a date in YYYY-MM-DD format.")
+    if parsed_date == datetime.date.max:
+        raise argparse.ArgumentTypeError("Use a date that leaves room for the next day.")
     return parsed_date
 
 
