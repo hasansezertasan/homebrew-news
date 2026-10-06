@@ -1,0 +1,91 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  validate:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+
+  release-please:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      # Release only the merge commit that just passed validation. A later green
+      # push must not release a pending PR whose own merge commit failed checks.
+      - name: Identify a pending release PR merged at this commit
+        id: release-merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          pending=$(gh api "repos/$REPO/commits/$SHA/pulls" --paginate --slurp | jq --arg sha "$SHA" '[.[][]
+            | select(.merged_at != null and .merge_commit_sha == $sha)
+            | select(any(.labels[]; .name == "autorelease: pending"))] | length')
+          if [ "$pending" -gt 0 ]; then
+            echo 'is-release-merge=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'is-release-merge=false' >> "$GITHUB_OUTPUT"
+          fi
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        id: release-please
+        with:
+          config-file: .config/release-please-config.json
+          manifest-file: .config/release-please-manifest.json
+          skip-github-release: ${{ steps.release-merge.outputs.is-release-merge != 'true' }}
+      - name: Check out the release PR
+        if: steps.release-please.outputs.prs_created == 'true'
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ fromJSON(steps.release-please.outputs.pr).headBranchName }}
+      - name: Read the uv version from mise
+        id: uv-version
+        if: steps.release-please.outputs.prs_created == 'true'
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import tomllib
+          with open("mise.toml", "rb") as config:
+              print(f"version={tomllib.load(config)['tools']['uv']}")
+          PY
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
+        if: steps.release-please.outputs.prs_created == 'true'
+        with:
+          version: ${{ steps.uv-version.outputs.version }}
+          enable-cache: true
+          python-version: '3.14'
+      # A version bump changes both the editable package lock entry and AI Rulez
+      # provenance. Rebuild them after every release-please rewrite of its PR.
+      - name: Refresh the release PR's lockfile and generated bundles
+        if: steps.release-please.outputs.prs_created == 'true'
+        env:
+          PR: ${{ steps.release-please.outputs.pr }}
+        run: |
+          branch=$(jq -r .headBranchName <<< "$PR")
+          uv lock
+          make generate
+          make check
+          git add uv.lock .ai-rulez/.generated-manifest.json .ai-rulez-generated.json AGENTS.md CLAUDE.md .claude/rules/ .hermes.md .hermes/
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'chore: regenerate release artifacts'
+          git push origin "HEAD:$branch"

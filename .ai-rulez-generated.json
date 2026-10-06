@@ -1,0 +1,33 @@
+{
+  "schema_version": "v1",
+  "source_hash": "blake3:791bd0bb07e6cef4a1e7f14c0ff0272b8c12659b83d1fb8868f6aa421b5af453",
+  "outputs": {
+    ".hermes/package/pyproject.toml": {
+      "content_hash": "blake3:f48bb6eaf4ec50a474fa6e7686f11f043e0119fd43d86805f019f9608bb96bef"
+    },
+    ".hermes/package/src/homebrew_news_hermes_plugin/__init__.py": {
+      "content_hash": "blake3:ba7d7019dc0ecd5818eca3c3a9d44e280411b627b463e1d1d73f2e7dd783e5ed"
+    },
+    ".hermes/package/src/homebrew_news_hermes_plugin/hermes.py": {
+      "content_hash": "blake3:918ff38d3c9a9237fadb8715308dab3b25ea0dd048d0b69f62f9644eeea5f732"
+    },
+    ".hermes/package/src/homebrew_news_hermes_plugin/plugin.yaml": {
+      "content_hash": "blake3:dbdbed7c1f3e08e2f5292a65514b6ace5151970f8f50fb881a7ef272388d98ec"
+    },
+    ".hermes/package/src/homebrew_news_hermes_plugin/skills/write-news/SKILL.md": {
+      "content_hash": "blake3:91d45b9dde55a2ea1f34406a66529c7997ffdbf19cafbd4ab1bd12bd3035d2f5"
+    },
+    ".hermes/plugins/homebrew-news/__init__.py": {
+      "content_hash": "blake3:ba7d7019dc0ecd5818eca3c3a9d44e280411b627b463e1d1d73f2e7dd783e5ed"
+    },
+    ".hermes/plugins/homebrew-news/hermes.py": {
+      "content_hash": "blake3:918ff38d3c9a9237fadb8715308dab3b25ea0dd048d0b69f62f9644eeea5f732"
+    },
+    ".hermes/plugins/homebrew-news/plugin.yaml": {
+      "content_hash": "blake3:dbdbed7c1f3e08e2f5292a65514b6ace5151970f8f50fb881a7ef272388d98ec"
+    },
+    ".hermes/plugins/homebrew-news/skills/write-news/SKILL.md": {
+      "content_hash": "blake3:91d45b9dde55a2ea1f34406a66529c7997ffdbf19cafbd4ab1bd12bd3035d2f5"
+    }
+  }
+}

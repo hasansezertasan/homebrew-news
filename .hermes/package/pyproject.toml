@@ -1,0 +1,24 @@
+[build-system]
+requires = ['hatchling>=1.27']
+build-backend = 'hatchling.build'
+
+[project]
+name = 'homebrew-news-hermes-plugin'
+version = '0.0.0'
+description = 'Collect Homebrew tap changes and write daily news with source links.'
+requires-python = '>=3.14'
+
+[project.entry-points]
+[project.entry-points.'hermes_agent.plugins']
+homebrew-news = 'homebrew_news_hermes_plugin'
+
+[project.urls]
+Homepage = 'https://github.com/hasansezertasan/homebrew-news'
+Repository = 'https://github.com/hasansezertasan/homebrew-news'
+
+[tool]
+[tool.hatch]
+[tool.hatch.build]
+[tool.hatch.build.targets]
+[tool.hatch.build.targets.wheel]
+packages = ['src/homebrew_news_hermes_plugin']

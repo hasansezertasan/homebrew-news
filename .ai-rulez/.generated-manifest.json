@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "files": [
+    ".claude/rules/development.md",
+    ".hermes.md",
+    "AGENTS.md",
+    "CLAUDE.md"
+  ]
+}
