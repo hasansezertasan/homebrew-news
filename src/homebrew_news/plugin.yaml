@@ -1,5 +1,5 @@
 name: homebrew-news
-version: 0.0.0
+version: 0.1.0
 manifest_version: 2
 python_dependencies:
   - stamina>=24.3,<27
@@ -9,9 +9,12 @@ provides_tools:
 config_schema:
   taps:
     type: list
-    default: [Homebrew/homebrew-core]
+    default:
+      - Homebrew/homebrew-core
     description: Full GitHub owner/repository names to track.
   config_path:
     type: str
     default: ''
-    description: Optional taps.toml path; relative paths resolve inside the plugin installation.
+    description: >-
+      Optional taps.toml path; relative paths resolve inside the plugin
+      installation.

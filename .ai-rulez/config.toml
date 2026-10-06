@@ -7,7 +7,7 @@ compact = true
 
 [plugin]
 name = "homebrew-news"
-version = "0.0.0"
+version = "0.1.0"
 description = "Collect Homebrew tap changes and write daily news with source links."
 homepage = "https://github.com/hasansezertasan/homebrew-news"
 repository = "https://github.com/hasansezertasan/homebrew-news"
